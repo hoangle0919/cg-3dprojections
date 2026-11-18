@@ -28,7 +28,7 @@ function mat4x4Perspective(prp, srp, vup, clip) {
     let sh = new Matrix(4, 4);
     mat4x4ShearXY(sh, cw_x / near, cw_y / near);
 
-    // 4. scale into the canonical view volume
+    // 4. scale such that view volume bounds are ([z,-z], [z,-z], [-1,zmin])
     let s = new Matrix(4, 4);
     mat4x4Scale(s, (2 * near) / ((right - left) * far),
                    (2 * near) / ((top - bottom) * far),
@@ -40,9 +40,9 @@ function mat4x4Perspective(prp, srp, vup, clip) {
 // create a 4x4 matrix to project a perspective image on the z=-1 plane
 function mat4x4MPer() {
     let mper = new Matrix(4, 4);
-    mper.values = [[1, 0,  0, 0],
-                   [0, 1,  0, 0],
-                   [0, 0,  1, 0],
+    mper.values = [[1, 0, 0, 0],
+                   [0, 1, 0, 0],
+                   [0, 0, 1, 0],
                    [0, 0, -1, 0]];
     return mper;
 }
@@ -50,10 +50,10 @@ function mat4x4MPer() {
 // create a 4x4 matrix to translate/scale projected vertices to the viewport (window)
 function mat4x4Viewport(width, height) {
     let viewport = new Matrix(4, 4);
-    viewport.values = [[width / 2, 0,          0, width / 2],
-                       [0,         height / 2, 0, height / 2],
-                       [0,         0,          1, 0],
-                       [0,         0,          0, 1]];
+     viewport.values = [[width/2, 0, 0, width/2],
+                        [0, height/2, 0, height/2],
+                        [0, 0, 1, 0],
+                        [0, 0, 0, 1]];
     return viewport;
 }
 
